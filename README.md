@@ -4,7 +4,7 @@ Program for controlling the oscilloscope from the terminal.
 ![demo](demo.png)
 
 ## Linux instalation:
-```shell
+```bash
 # require python3 or higher  
 # install python library for serial communication  
 sudo aptitude install python3-serial  
@@ -15,7 +15,7 @@ cd HMO1002
 # creating a symbolic link  
 sudo ln -s $(pwd)/osc.py /usr/bin/osc  
 # run  
-osc
+osc # args or ./osc.py args
 # remove  
 sudo rm /usr/bin/osc  
 ```
