@@ -20,6 +20,7 @@ Program for controlling the oscilloscope from the terminal.
 
 
 ## Agruments
+### main help
   `osc -h`  
   usage: osc [-h] {screenshot,autoscale,fgen} ...  
 
@@ -34,7 +35,7 @@ Program for controlling the oscilloscope from the terminal.
   -h, --help            show this help message and exit  
 
 ### screenshot
-  `osc screenshot -h`
+  `osc screenshot -h`  
   usage: osc screenshot [-h] [-f FILE] [-c {color,gray,invert}] [-d]  
 
   positional arguments:  
