@@ -12,7 +12,7 @@ Program for controlling the oscilloscope from the terminal.
   change directory  
   `cd HMO1002`  
   creating a symbolic link  
-  `sudo ln -s \`pwd\`/osc.py /usr/bin/osc`  
+  `sudo ln -s $(pwd)/osc.py /usr/bin/osc`  
   run  
   `osc` or `./osc.py` or `python3 osc.py`  
   remove  
