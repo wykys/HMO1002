@@ -2,9 +2,10 @@
 # bacic comands for HMO1002
 
 import serial
+from serial.tools import list_ports
+
 import time
 import os
-import subprocess
 import log
 
 class HMO1002:
@@ -21,22 +22,12 @@ class HMO1002:
 
     def find_oscilloscope(self):
         """ find port when is connected oscilloscope """
-        dev_folder = '/dev/serial/by-id'
-        oscilloscope = ''
-        if os.path.exists(dev_folder):
-            try:
-                oscilloscope = subprocess.check_output('ls -l ' + dev_folder + ' | grep ' + self.name, shell=True).decode('utf-8').strip()
-            except subprocess.CalledProcessError as e:
-                pass
+        for dev in list_ports.comports():
+            if dev.description == self.name:
+                return dev.device
 
-        if not (self.name in oscilloscope):
-            log.err(self.name + ' is not connected')
-            exit(1)
-
-        port = '/dev/' + oscilloscope.split('../')[-1]
-        log.ok(self.name + ' is connected to ' + port)
-
-        return port
+        log.err(self.name + ' is not connected')
+        exit(1)
 
     def open_connection(self):
         """ open connection """
