@@ -3,8 +3,10 @@
 
 from HMO1002 import HMO1002
 
+
 class SCPI(HMO1002):
     """ Standard Commands for Programmable Instruments """
+
     def __init__(self):
         """ initialization """
         super().__init__()

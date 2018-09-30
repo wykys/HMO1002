@@ -8,6 +8,7 @@ import time
 import os
 import log
 
+
 class HMO1002:
     def __init__(self):
         """ initialization """
@@ -37,7 +38,7 @@ class HMO1002:
         self.ser.parity = serial.PARITY_NONE
         self.ser.bytesize = serial.EIGHTBITS
 
-        self.ser.timeout = 1.5 # in seconds
+        self.ser.timeout = 1.5  # in seconds
         try:
             self.ser.open()
             log.ok('port {} is open'.format(self.port))
@@ -68,4 +69,4 @@ class HMO1002:
             for c in cmd:
                 self.send_byte(ord(c))
             self.send_byte(ord('\n'))
-            log.stdo('CMD: ' + log.colors.reset + cmd)
+            log.cmd(cmd)
