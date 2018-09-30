@@ -6,7 +6,7 @@ import argparse
 import time
 import log
 import SI
-from SCPI import SCPI
+import SCPI
 
 parser = argparse.ArgumentParser('osc')
 subparsers = parser.add_subparsers(help='commands')
@@ -83,12 +83,12 @@ if 'screenshot' in args:
         name = time.strftime('%Y.%m.%d-%H:%M:%S-', time.localtime()) + args.file
     else:
         name = args.file
-    SCPI().screenshot(name=name, color=args.color)
+    SCPI.screenshot(name=name, color=args.color)
 
 elif 'autoscale' in args:
-    SCPI().autoscale()
+    SCPI.autoscale()
 
 elif 'fgen' in args:
-    SCPI().function_generator(freq=SI.si_to_exp(args.freq))
+    SCPI.function_generator(freq=SI.si_to_exp(args.freq))
 else:
     log.war('no any argument')
