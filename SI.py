@@ -1,6 +1,7 @@
 # wykys 2017
 # SI convert
 
+
 def si_to_exp(x):
     """ convert SI prefix to exponencial """
     if type(x) is str:

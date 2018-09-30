@@ -1,14 +1,37 @@
-import sys
-from colors import colors
+# wykys 2018
 
-def err(s = ''):
-    print( colors.fg.red + colors.bold + 'Error: ' + s + colors.reset, file=sys.stderr)
+from sys import stdout, stderr
+from colorama import Fore, Style, init
+init()
 
-def war(s = ''):
-    print( colors.fg.yellow + colors.bold + 'Warning: ' + s + colors.reset, file=sys.stderr)
+PROMPT = Fore.BLUE + Style.BRIGHT + '>>> ' + Style.RESET_ALL
 
-def ok(s = ''):
-    print( colors.fg.green + colors.bold + 'OK: ' + s + colors.reset, file=sys.stdout)
 
-def stdo(s = ''):
-    print( colors.fg.white + colors.bold + s + colors.reset, file=sys.stdout)
+def err(s=''):
+    print(Fore.RED + Style.BRIGHT + 'Error: ' + s + Style.RESET_ALL, file=stderr)
+
+
+def war(s=''):
+    print(Fore.YELLOW + Style.BRIGHT + 'Warning: ' + s + Style.RESET_ALL, file=stderr)
+
+
+def ok(s=''):
+    print(Fore.GREEN + Style.BRIGHT + 'OK: ' + s + Style.RESET_ALL, file=stdout)
+
+
+def stdo(s=''):
+    print(Fore.WHITE + Style.BRIGHT + s + Style.RESET_ALL, file=stdout)
+
+
+def cmd(s=''):
+    print(Fore.WHITE + Style.BRIGHT + 'CMD: ', s + Style.RESET_ALL, file=stdout)
+
+
+def rx(s='', prompt=True):
+    print('\r' + Fore.LIGHTRED_EX + Style.BRIGHT + 'Rx: ' + Style.RESET_ALL + Fore.LIGHTRED_EX + s + Style.RESET_ALL, file=stdout, end='')
+    if prompt:
+        print('\n' + PROMPT, file=stdout, end='')
+
+
+def tx(s=''):
+    print(Fore.GREEN + Style.BRIGHT + 'Tx: ' + Style.RESET_ALL + Fore.GREEN + s + Style.RESET_ALL, file=stdout)
