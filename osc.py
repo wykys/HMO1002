@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # wykys 2017
 # program for control HMO1002 oscilloscope
 
