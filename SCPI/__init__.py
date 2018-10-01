@@ -4,3 +4,4 @@
 from .autoscale import *
 from .function_generator import *
 from .screenshot import *
+from .measurement import *
