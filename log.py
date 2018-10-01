@@ -24,7 +24,7 @@ def stdo(s=''):
 
 
 def cmd(s=''):
-    print(Fore.WHITE + Style.BRIGHT + 'CMD: ', s + Style.RESET_ALL, file=stdout)
+    print(Fore.CYAN + Style.BRIGHT + 'CMD: ' + s + Style.RESET_ALL, file=stdout)
 
 
 def rx(s='', prompt=True):
