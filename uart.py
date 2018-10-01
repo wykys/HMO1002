@@ -28,7 +28,7 @@ class UART:
         bytesize=8,
         parity='N',
         stopbits=1,
-        timeout=None,
+        timeout=0.7,
         delay=0.01,
         port=None
     ):
