@@ -77,13 +77,23 @@ parser_fgen.add_argument(
 )
 
 # auto measurement
-# autoscale
 parser_measurement = subparsers.add_parser(
     'measurement',
     help='autoscale oscilloscope'
 )
 parser_measurement.add_argument(
     'measurement',
+    action='store_true',
+    help='run xxxxxxxxx'
+)
+
+# export
+parser_measurement = subparsers.add_parser(
+    'export',
+    help='export data'
+)
+parser_measurement.add_argument(
+    'export',
     action='store_true',
     help='run xxxxxxxxx'
 )
@@ -119,7 +129,12 @@ elif 'measurement' in args:
     u1 = []
     u2 = []
 
-    frequency = np.logspace(1, 5, 20)[:-2]
+    frequency = np.logspace(1, 5, 15)
+    for i, f in enumerate(frequency):
+        if f > 50e3:
+            frequency = frequency[:i]
+            break
+
     for i, f in enumerate(frequency, 1):
         log.stdo('measurement: {}/{}'.format(i, len(frequency)))
 
@@ -164,6 +179,10 @@ elif 'measurement' in args:
     plt.grid(True, 'major')
     plt.grid(True, 'minor')
     plt.show()
+
+elif 'export' in args:
+    print('ekfrkfpokfperokpro')
+    SCPI.export()
 
 else:
     log.war('no any argument')
