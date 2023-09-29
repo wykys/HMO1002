@@ -22,8 +22,6 @@ def export():
         t.append(float(tmp[0]))
         s.append(float(tmp[1]))
 
-    print(len(result))
-
     plt.plot(t, s)
     plt.grid(True, 'major')
     plt.grid(True, 'minor')
