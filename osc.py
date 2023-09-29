@@ -8,8 +8,6 @@ import log
 import SI
 import SCPI
 
-from log import print
-
 parser = argparse.ArgumentParser('osc')
 subparsers = parser.add_subparsers(help='commands')
 
@@ -203,7 +201,6 @@ elif 'measurement' in args:
     plt.show()
 
 elif 'export' in args:
-    print('ekfrkfpokfperokpro')
     SCPI.export()
 
 else:
