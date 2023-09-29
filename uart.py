@@ -11,7 +11,7 @@ from singleton import singleton
 
 
 @singleton
-class UART:
+class Uart:
     def __init__(
         self,
         name='HMO1002',
@@ -65,9 +65,9 @@ class UART:
     def open_connection(self):
         try:
             self.ser.open()
-            log.ok('port {} is open'.format(self.ser.port))
+            log.ok(f'port {self.ser.port} is open')
         except serial.SerialException:
-            log.err('port {} opening is fail'.format(self.ser.port))
+            log.err(f'port {self.ser.port} opening is fail')
             exit(1)
 
         self.ser.reset_input_buffer()
@@ -104,4 +104,4 @@ class UART:
             log.cmd(cmd)
 
 
-UART = UART()
+Uart = Uart()

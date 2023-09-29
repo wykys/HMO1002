@@ -1,4 +1,4 @@
-from uart import UART
+from device import Device
 
 MEASUREMENT_MIN = 1
 MEASUREMENT_MAX = 6
@@ -61,48 +61,48 @@ def _check_measurement(measurement):
 
 # quick measurement
 def quick_measurement_on(measurement):
-    UART.send_cmd('MEASurement{:d}:AON'.format(measurement))
+    Device.send_cmd('MEASurement{:d}:AON'.format(measurement))
 
 
 # quick measurement
 def quick_measurement_off(measurement):
-    UART.send_cmd('MEASurement{:d}:AOFF'.format(measurement))
+    Device.send_cmd('MEASurement{:d}:AOFF'.format(measurement))
 
 
 def measurement_state(measurement, state):
-    UART.send_cmd('MEASurement{:d}:ENABLE {}'.format(
+    Device.send_cmd('MEASurement{:d}:ENABLE {}'.format(
         measurement, state
     ))
 
 
 def measurement_set_source(measurement, signal_source, reference_source=None):
     if reference_source is None:
-        UART.send_cmd('MEASurement{:d}:SOURce {}'.format(
+        Device.send_cmd('MEASurement{:d}:SOURce {}'.format(
             measurement, signal_source
         ))
     else:
-        UART.send_cmd('MEASurement{:d}:SOURce {}, {}'.format(
+        Device.send_cmd('MEASurement{:d}:SOURce {}, {}'.format(
             measurement, signal_source, reference_source
         ))
 
 
 def measurement_set_category(measurement, category):
-    UART.send_cmd('MEASurement{:d}:MAIN {}'.format(
+    Device.send_cmd('MEASurement{:d}:MAIN {}'.format(
         measurement, category
     ))
 
 
 def measurement_result(measurement):
-    UART.send_cmd('MEASurement{:d}:RESult?'.format(
+    Device.send_cmd('MEASurement{:d}:RESult?'.format(
         measurement
     ))
 
     result = []
-    byte = UART.read_byte()
+    byte = Device.read_byte()
 
     while not (byte is None):
         result.append(byte)
-        byte = UART.read_byte()
+        byte = Device.read_byte()
 
     return None if len(result) == 0 else float(''.join(map(lambda c: chr(c), result)))
 

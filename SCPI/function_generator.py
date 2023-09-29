@@ -1,5 +1,5 @@
-from uart import UART
+from device import Device
 
 
 def function_generator(freq):
-    UART.send_cmd('GENerator:FREQuency {:e}'.format(float(freq)))
+    Device.send_cmd(f'GENerator:FREQuency {float(freq):e}')

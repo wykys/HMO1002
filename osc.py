@@ -8,7 +8,20 @@ import log
 import SI
 import SCPI
 
+from device import Device
+
 parser = argparse.ArgumentParser('osc')
+
+parser.add_argument(
+    '-i',
+    '--interface',
+    dest='interface',
+    action='store',
+    default='uart',
+    choices=['uart', 'ethernet'],
+    help='communication interface with the device',
+)
+
 subparsers = parser.add_subparsers(help='commands')
 
 # screenshot
@@ -99,6 +112,11 @@ parser_measurement.add_argument(
 )
 
 args = parser.parse_args()
+
+if args.interface == 'uart':
+    Device.slect_uart()
+else:
+    Device.select_ethernet()
 
 if 'screenshot' in args:
     if args.date:

@@ -1,5 +1,5 @@
-from uart import UART
+from device import Device
 
 
 def autoscale():
-    UART.send_cmd('AUToscale')
+    Device.send_cmd('AUToscale')

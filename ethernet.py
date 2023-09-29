@@ -1,11 +1,8 @@
 #!/usr/bin/python3
 
-import os
-import time
-from socket import socket, AF_INET, SOCK_STREAM
-
 import log
 from singleton import singleton
+from socket import socket, AF_INET, SOCK_STREAM
 
 
 @singleton
@@ -26,7 +23,8 @@ class Ethernet:
 
     def open_connection(self):
         try:
-            self.socket.connect(self.ip, self.port)
+            self.socket.connect((self.ip, self.port))
+            log.ok(f'socket {self.ip}:{self.port} is open')
         except:
             log.err(f'socket {self.ip}:{self.port} opening is fail')
             exit(1)
@@ -36,7 +34,7 @@ class Ethernet:
 
     def read_byte(self):
         try:
-            tmp = self.socket.recv(1).decode('utf-8')
+            tmp = self.socket.recv(100000)
         except:
             log.err('the device was disconnected')
             exit()
@@ -51,13 +49,10 @@ class Ethernet:
         except:
             log.err('the device was disconnected')
 
-        time.sleep(0.003)
-
     def send_cmd(self, cmd):
         if type(cmd) == str:
             for c in cmd:
                 self.send_byte(ord(c))
-                self.cmd_delay()
             self.send_byte(ord('\n'))
             log.cmd(cmd)
 

@@ -1,17 +1,17 @@
-from uart import UART
+from device import Device
 from matplotlib import pyplot as plt
 
 
 def export():
-    UART.send_cmd('FORMat ASCii, 32')
-    UART.send_cmd('CHAN1:DATA?')
+    Device.send_cmd('FORMat ASCii, 32')
+    Device.send_cmd('CHAN1:DATA?')
 
     result = []
-    byte = UART.read_byte()
+    byte = Device.read_byte()
 
     while not (byte is None):
         result.append(byte)
-        byte = UART.read_byte()
+        byte = Device.read_byte()
 
     t = []
     s = []
