@@ -50,8 +50,11 @@ class Ethernet:
             log.err('the device was disconnected')
 
     def send_cmd(self, cmd):
-        if type(cmd) == str:
-            for c in cmd:
-                self.send_byte(ord(c))
-            self.send_byte(ord('\n'))
-            log.cmd(cmd)
+        try:
+            if type(cmd) == str:
+                for c in cmd:
+                    self.send_byte(ord(c))
+                self.send_byte(ord('\n'))
+                log.cmd(cmd)
+        except:
+            log.err('the device was disconnected')
