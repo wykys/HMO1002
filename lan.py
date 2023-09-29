@@ -2,7 +2,7 @@
 
 import socket
 
-OSC_IP = '192.168.1.8'
+OSC_IP = '192.168.1.23'
 OSC_PORT = 5025
 
 if __name__ == '__main__':
