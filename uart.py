@@ -102,6 +102,3 @@ class Uart:
                 self.cmd_delay()
             self.send_byte(ord('\n'))
             log.cmd(cmd)
-
-
-Uart = Uart()

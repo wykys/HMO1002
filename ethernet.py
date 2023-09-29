@@ -55,6 +55,3 @@ class Ethernet:
                 self.send_byte(ord(c))
             self.send_byte(ord('\n'))
             log.cmd(cmd)
-
-
-Ethernet = Ethernet()
