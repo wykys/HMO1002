@@ -7,16 +7,7 @@ from serial.tools import list_ports
 import time
 import os
 import log
-
-
-def singleton(class_):
-    instances = {}
-
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
+from singleton import singleton
 
 
 @singleton
@@ -83,7 +74,6 @@ class UART:
 
     def close_connection(self):
         self.ser.close()
-        log.ok('port is close')
 
     def read_byte(self):
         try:
