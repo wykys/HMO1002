@@ -52,50 +52,38 @@ class MeasType:
     novershoot = 'NOVershoot'
 
 
-def _check_measurement(measurement):
-    if measurement >= MEASUREMENT_MIN and measurement <= MEASUREMENT_MAX:
-        return True
-    else:
-        return False
+def quick_measurement_on(measurement: int) -> None:
+    Device.send_cmd(f'MEASurement{measurement:d}:AON')
 
 
-# quick measurement
-def quick_measurement_on(measurement):
-    Device.send_cmd('MEASurement{:d}:AON'.format(measurement))
+def quick_measurement_off(measurement: int) -> None:
+    Device.send_cmd(f'MEASurement{measurement:d}:AOFF')
 
 
-# quick measurement
-def quick_measurement_off(measurement):
-    Device.send_cmd('MEASurement{:d}:AOFF'.format(measurement))
+def measurement_state(measurement: int, state: str) -> None:
+    Device.send_cmd(f'MEASurement{measurement:d}:ENABLE {state}')
 
 
-def measurement_state(measurement, state):
-    Device.send_cmd('MEASurement{:d}:ENABLE {}'.format(
-        measurement, state
-    ))
-
-
-def measurement_set_source(measurement, signal_source, reference_source=None):
+def measurement_set_source(
+    measurement: int,
+    signal_source: str,
+    reference_source: str = None,
+) -> None:
     if reference_source is None:
-        Device.send_cmd('MEASurement{:d}:SOURce {}'.format(
-            measurement, signal_source
-        ))
+        Device.send_cmd(f'MEASurement{measurement:d}:SOURce {signal_source}')
     else:
-        Device.send_cmd('MEASurement{:d}:SOURce {}, {}'.format(
-            measurement, signal_source, reference_source
-        ))
+        Device.send_cmd(
+            f'MEASurement{measurement:d}:'
+            f'SOURce {signal_source}, {reference_source}'
+        )
 
 
-def measurement_set_category(measurement, category):
-    Device.send_cmd('MEASurement{:d}:MAIN {}'.format(
-        measurement, category
-    ))
+def measurement_set_category(measurement: int, category: str) -> None:
+    Device.send_cmd(f'MEASurement{measurement:d}:MAIN {category}')
 
 
-def measurement_result(measurement):
-    Device.send_cmd('MEASurement{:d}:RESult?'.format(
-        measurement
-    ))
+def measurement_result(measurement: int):
+    Device.send_cmd(f'MEASurement{measurement:d}:RESult?')
 
     result = []
     byte = Device.read_byte()
@@ -104,7 +92,9 @@ def measurement_result(measurement):
         result.append(byte)
         byte = Device.read_byte()
 
-    return None if len(result) == 0 else float(''.join(map(lambda c: chr(c), result)))
+    return None if len(result) == 0 else float(
+        ''.join(map(lambda c: chr(c), result))
+    )
 
 
 class Measurement:
@@ -121,7 +111,8 @@ class Measurement:
         self.reference_source = reference_source
 
         self.on()
-        measurement_set_source(self.measurement, self.signal_source, self.reference_source)
+        measurement_set_source(
+            self.measurement, self.signal_source, self.reference_source)
         measurement_set_category(self.measurement, self.category)
 
     def on(self):
