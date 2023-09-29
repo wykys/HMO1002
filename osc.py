@@ -8,6 +8,8 @@ import log
 import SI
 import SCPI
 
+from log import print
+
 parser = argparse.ArgumentParser('osc')
 subparsers = parser.add_subparsers(help='commands')
 
@@ -102,7 +104,10 @@ args = parser.parse_args()
 
 if 'screenshot' in args:
     if args.date:
-        name = time.strftime('%Y.%m.%d-%H:%M:%S-', time.localtime()) + args.file
+        name = time.strftime(
+            '%Y.%m.%d-%H:%M:%S-',
+            time.localtime()
+        ) + args.file
     else:
         name = args.file
     SCPI.screenshot(name=name, color=args.color)
@@ -118,10 +123,27 @@ elif 'measurement' in args:
     from matplotlib import pyplot as plt
     from time import sleep
 
-    freq = SCPI.Measurement(1, SCPI.MeasType.frequency, SCPI.Source.channel1)
-    phase = SCPI.Measurement(2, SCPI.MeasType.phase, SCPI.Source.channel1, SCPI.Source.channel2)
-    u1_rms = SCPI.Measurement(3, SCPI.MeasType.rms, SCPI.Source.channel1)
-    u2_rms = SCPI.Measurement(4, SCPI.MeasType.rms, SCPI.Source.channel2)
+    freq = SCPI.Measurement(
+        measurement=1,
+        category=SCPI.MeasType.frequency,
+        signal_source=SCPI.Source.channel1,
+    )
+    phase = SCPI.Measurement(
+        measurement=2,
+        category=SCPI.MeasType.phase,
+        signal_source=SCPI.Source.channel1,
+        reference_source=SCPI.Source.channel2,
+    )
+    u1_rms = SCPI.Measurement(
+        measurement=3,
+        category=SCPI.MeasType.rms,
+        signal_source=SCPI.Source.channel1,
+    )
+    u2_rms = SCPI.Measurement(
+        measurement=4,
+        category=SCPI.MeasType.rms,
+        signal_source=SCPI.Source.channel2,
+    )
 
     fr = []
     ph = []
@@ -136,7 +158,7 @@ elif 'measurement' in args:
             break
 
     for i, f in enumerate(frequency, 1):
-        log.stdo('measurement: {}/{}'.format(i, len(frequency)))
+        log.stdo(f'measurement: {i}/{len(frequency)}')
 
         SCPI.function_generator(f)
         SCPI.autoscale()
@@ -160,9 +182,9 @@ elif 'measurement' in args:
             u2[-1] = u2_rms.get(),
 
         try:
-            ku.append(20*np.log10(u2[-1]/u1[-1]))
+            ku.append(20 * np.log10(u2[-1] / u1[-1]))
         except TypeError:
-            log.war('problem on freq {:e} Hz'.format(f))
+            log.war(f'problem on freq {f:e} Hz')
 
     plt.subplot(211)
     plt.title('modular frequency response')
