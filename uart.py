@@ -86,13 +86,16 @@ class Uart:
             return None
         return int.from_bytes(tmp, byteorder='little', signed=False)
 
-    def read_response(self) -> list:
+    def read_response(self, size: int) -> list:
         response = []
         byte = self.read_byte()
 
-        while not (byte is None):
+        for i in range(size):
+            if byte is None:
+                break
             response.append(byte)
             byte = self.read_byte()
+
         return response
 
     def send_byte(self, byte) -> None:

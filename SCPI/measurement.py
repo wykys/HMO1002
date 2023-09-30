@@ -87,9 +87,15 @@ def measurement_result(measurement: int):
 
     response = Device.read_response()
 
-    return None if len(response) == 0 else float(
-        ''.join(map(lambda c: chr(c), response))
-    )
+    if len(response) == 0:
+        response = None
+    else:
+        response = float(
+            ''.join(map(lambda c: chr(c), response))
+        )
+
+    print(response)
+    return response
 
 
 class Measurement:
