@@ -90,15 +90,9 @@ class Uart:
 
         return response
 
-    def send_byte(self, byte) -> None:
+    def send_cmd(self, cmd: str) -> None:
         try:
-            self.ser.write(bytes((byte,)))
+            self.ser.write(bytes(f'{cmd}\n', 'utf-8'))
         except serial.SerialException:
             log.err('the device was disconnected')
-
-    def send_cmd(self, cmd: str) -> None:
-        if type(cmd) == str:
-            for c in cmd:
-                self.send_byte(ord(c))
-            self.send_byte(ord('\n'))
-            log.cmd(cmd)
+        log.cmd(cmd)
