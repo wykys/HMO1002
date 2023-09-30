@@ -32,12 +32,16 @@ class Ethernet:
     def close_connection(self) -> None:
         self.socket.close()
 
-    def read_response(self, size: int) -> bytes:
+    def read_response(self, size: int) -> bytes | None:
         try:
             response = self.socket.recv(size)
         except:
             log.err('the device was disconnected')
             exit(1)
+
+        if response == b'':
+            return None
+
         return response
 
     def send_cmd(self, cmd: str) -> None:

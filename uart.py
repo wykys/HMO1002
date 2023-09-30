@@ -75,26 +75,25 @@ class Uart:
     def close_connection(self) -> None:
         self.ser.close()
 
-    def read_byte(self) -> None | int:
+    def read_byte(self) -> bytes:
         try:
-            tmp = self.ser.read(1)
+            response = self.ser.read(1)
         except serial.SerialException:
             log.err('the device was disconnected')
             exit()
+        return response
 
-        if tmp == b'':
-            return None
-        return int.from_bytes(tmp, byteorder='little', signed=False)
-
-    def read_response(self, size: int) -> list:
-        response = []
-        byte = self.read_byte()
-
+    def read_response(self, size: int) -> bytes | None:
+        response = b''
         for i in range(size):
-            if byte is None:
+            tmp = self.read_byte()
+            response += tmp
+
+            if tmp == b'':
                 break
-            response.append(byte)
-            byte = self.read_byte()
+
+        if response == b'':
+            return None
 
         return response
 
