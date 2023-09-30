@@ -29,7 +29,7 @@ def screenshot(name='img', color='color'):
             break
         img += tmp
 
-    if len(img != size_image):
+    if len(img) != size_image:
         log.err('bad image data')
         exit(1)
 
