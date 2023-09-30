@@ -4,8 +4,6 @@
 import serial
 from serial.tools import list_ports
 
-import time
-import os
 import log
 from singleton import singleton
 
@@ -19,12 +17,10 @@ class Uart:
         bytesize=8,
         parity='N',
         stopbits=1,
-        timeout=0.7,
-        delay=0.01,
+        timeout=1.5,
         port=None
     ) -> None:
         self.name = name
-        self.delay = delay
         self.ser = serial.Serial()
         self.ser.baudrate = baudrate
         self.ser.bytesize = bytesize
@@ -44,9 +40,6 @@ class Uart:
 
     def __del__(self) -> None:
         self.close_connection()
-
-    def cmd_delay(self) -> None:
-        time.sleep(self.delay)
 
     def find_device(self) -> None:
         for port in list_ports.comports():
@@ -102,14 +95,10 @@ class Uart:
             self.ser.write(bytes((byte,)))
         except serial.SerialException:
             log.err('the device was disconnected')
-            os.system('killall ser-term')
 
-        time.sleep(0.003)
-
-    def send_cmd(self, cmd) -> None:
+    def send_cmd(self, cmd: str) -> None:
         if type(cmd) == str:
             for c in cmd:
                 self.send_byte(ord(c))
-                self.cmd_delay()
             self.send_byte(ord('\n'))
             log.cmd(cmd)
