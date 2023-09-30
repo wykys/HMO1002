@@ -30,8 +30,8 @@ class Device:
     def send_cmd(self, cmd: str) -> None:
         self.interface.send_cmd(cmd)
 
-    def read_byte(self):
-        return self.interface.read_byte()
+    def read_response(self):
+        return self.interface.read_response()
 
 
 Device = Device()

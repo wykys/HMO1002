@@ -11,17 +11,17 @@ class Ethernet:
         self,
         ip='192.168.1.23',
         port=5025,
-    ):
+    ) -> None:
         self.ip = ip
         self.port = port
 
         self.socket = socket(AF_INET, SOCK_STREAM)
         self.open_connection()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.close_connection()
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         try:
             self.socket.connect((self.ip, self.port))
             log.ok(f'socket {self.ip}:{self.port} is open')
@@ -29,32 +29,20 @@ class Ethernet:
             log.err(f'socket {self.ip}:{self.port} opening is fail')
             exit(1)
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         self.socket.close()
 
-    def read_byte(self):
+    def read_response(self) -> bytes:
         try:
-            tmp = self.socket.recv(100000)
+            response = self.socket.recv(1024)
         except:
             log.err('the device was disconnected')
-            exit()
+            exit(1)
+        return response
 
-        if tmp == b'':
-            return None
-        return int.from_bytes(tmp, byteorder='little', signed=False)
-
-    def send_byte(self, byte):
+    def send_cmd(self, cmd: str) -> None:
         try:
-            self.socket.send(bytes((byte,)))
-        except:
-            log.err('the device was disconnected')
-
-    def send_cmd(self, cmd):
-        try:
-            if type(cmd) == str:
-                for c in cmd:
-                    self.send_byte(ord(c))
-                self.send_byte(ord('\n'))
-                log.cmd(cmd)
+            self.socket.send(bytes(f'{cmd}\n', 'utf-8'))
+            log.cmd(cmd)
         except:
             log.err('the device was disconnected')

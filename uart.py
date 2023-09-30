@@ -22,7 +22,7 @@ class Uart:
         timeout=0.7,
         delay=0.01,
         port=None
-    ):
+    ) -> None:
         self.name = name
         self.delay = delay
         self.ser = serial.Serial()
@@ -42,13 +42,13 @@ class Uart:
             self.ser.port = port
         self.open_connection()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.close_connection()
 
-    def cmd_delay(self):
+    def cmd_delay(self) -> None:
         time.sleep(self.delay)
 
-    def find_device(self):
+    def find_device(self) -> None:
         for port in list_ports.comports():
             if self.name in port.description:
                 return port.device
@@ -57,12 +57,12 @@ class Uart:
         self.list_ports()
         exit(1)
 
-    def list_ports(self):
+    def list_ports(self) -> None:
         log.stdo('List all connected devices:')
         for port in list_ports.comports():
-            print('    ', port.device, '\t', port.description)
+            log.stdo(f'    {port.device}\t{port.description}')
 
-    def open_connection(self):
+    def open_connection(self) -> None:
         try:
             self.ser.open()
             log.ok(f'port {self.ser.port} is open')
@@ -72,10 +72,10 @@ class Uart:
 
         self.ser.reset_input_buffer()
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         self.ser.close()
 
-    def read_byte(self):
+    def read_byte(self) -> None | int:
         try:
             tmp = self.ser.read(1)
         except serial.SerialException:
@@ -86,7 +86,16 @@ class Uart:
             return None
         return int.from_bytes(tmp, byteorder='little', signed=False)
 
-    def send_byte(self, byte):
+    def read_response(self) -> list:
+        response = []
+        byte = self.read_byte()
+
+        while not (byte is None):
+            response.append(byte)
+            byte = self.read_byte()
+        return response
+
+    def send_byte(self, byte) -> None:
         try:
             self.ser.write(bytes((byte,)))
         except serial.SerialException:
@@ -95,7 +104,7 @@ class Uart:
 
         time.sleep(0.003)
 
-    def send_cmd(self, cmd):
+    def send_cmd(self, cmd) -> None:
         if type(cmd) == str:
             for c in cmd:
                 self.send_byte(ord(c))

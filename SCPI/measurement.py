@@ -85,15 +85,10 @@ def measurement_set_category(measurement: int, category: str) -> None:
 def measurement_result(measurement: int):
     Device.send_cmd(f'MEASurement{measurement:d}:RESult?')
 
-    result = []
-    byte = Device.read_byte()
+    response = Device.read_response()
 
-    while not (byte is None):
-        result.append(byte)
-        byte = Device.read_byte()
-
-    return None if len(result) == 0 else float(
-        ''.join(map(lambda c: chr(c), result))
+    return None if len(response) == 0 else float(
+        ''.join(map(lambda c: chr(c), response))
     )
 
 
