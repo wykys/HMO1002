@@ -45,12 +45,19 @@ def module_and_phase_frequency_characteristics():
             break
 
     for i, f in enumerate(frequency, 1):
+
+        period = 1 / f
+
         log.stdo(f'measurement: {i}/{len(frequency)}')
 
+        SCPI.run()
         SCPI.function_generator(f)
+        sleep(1)
         SCPI.autoscale()
-        SCPI.time_base(1 / f)
-        sleep(5)
+        SCPI.time_base(period)
+        sleep(2 + 12 * period)
+        SCPI.stop()
+
         fr.append(freq.get())
         ph.append(phase.get())
         u1.append(u1_rms.get())
@@ -62,17 +69,18 @@ def module_and_phase_frequency_characteristics():
             u1[-1] is None,
             u2[-1] is None,
         )):
+            log.war('repeating the measurement')
+            SCPI.run()
             SCPI.autoscale()
-            sleep(5)
-            fr[-1] = freq.get(),
-            ph[-1] = phase.get(),
-            u1[-1] = u1_rms.get(),
-            u2[-1] = u2_rms.get(),
+            SCPI.time_base(period * 2)
+            sleep(2 + 12 * period)
+            SCPI.stop()
+            fr[-1] = freq.get()
+            ph[-1] = phase.get()
+            u1[-1] = u1_rms.get()
+            u2[-1] = u2_rms.get()
 
-        try:
-            ku.append(20 * np.log10(u2[-1] / u1[-1]))
-        except TypeError:
-            log.war(f'problem on freq {f:e} Hz')
+        ku.append(20 * np.log10(u2[-1] / u1[-1]))
 
     plt.subplot(211)
     plt.title('modular frequency response')
@@ -110,7 +118,7 @@ def module_characteristic_of_both_channels():
     ku1 = []
     ku2 = []
 
-    frequency = np.logspace(1, 5, 200)
+    frequency = np.logspace(1, 5, 400)
     for i, f in enumerate(frequency):
 
         if f > 20e3:
