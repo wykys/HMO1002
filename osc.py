@@ -70,6 +70,25 @@ parser_autoscale.add_argument(
     help='run autoscale'
 )
 
+# time base
+parser_time_base = subparsers.add_parser(
+    'time_base',
+    help='sets the horizontal scale for all channel and math waveforms'
+)
+parser_time_base.add_argument(
+    'time_base',
+    action='store_true',
+    help='sets the horizontal scale for all channel and math waveforms'
+)
+parser_time_base.add_argument(
+    '-t',
+    '--time',
+    dest='time_scale',
+    action='store',
+    default=1e-3,
+    help='time scale'
+)
+
 # function generator
 parser_fgen = subparsers.add_parser(
     'fgen',
@@ -130,6 +149,9 @@ if 'screenshot' in args:
 
 elif 'autoscale' in args:
     SCPI.autoscale()
+
+elif 'time_base' in args:
+    SCPI.time_base(time_scale=SI.si_to_exp(args.time_scale))
 
 elif 'fgen' in args:
     SCPI.function_generator(freq=SI.si_to_exp(args.freq))
