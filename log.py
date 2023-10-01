@@ -1,14 +1,38 @@
-import sys
-from colors import colors
+# wykys 2018
 
-def err(s = ''):
-    print( colors.fg.red + colors.bold + 'Error: ' + s + colors.reset, file=sys.stderr)
+from rich import print
+from sys import stderr
 
-def war(s = ''):
-    print( colors.fg.yellow + colors.bold + 'Warning: ' + s + colors.reset, file=sys.stderr)
 
-def ok(s = ''):
-    print( colors.fg.green + colors.bold + 'OK: ' + s + colors.reset, file=sys.stdout)
+def err(s: str = '') -> str:
+    print(f'[bold red]ERROR: {s}[/]', file=stderr)
 
-def stdo(s = ''):
-    print( colors.fg.white + colors.bold + s + colors.reset, file=sys.stdout)
+
+def war(s: str = '') -> str:
+    print(f'[bold yellow]WARNING: {s}[/]', file=stderr)
+
+
+def ok(s: str = '') -> str:
+    print(f'[bold green]OK: {s}[/]')
+
+
+def stdo(s: str = '') -> str:
+    print(f'[bold white]{s}[/]')
+
+
+def cmd(s: str = '') -> str:
+    print(f'[bold cyan]CMD: {s}[/]')
+
+
+def rx(s: str = '', prompt: bool = True) -> str:
+    print(f'\r[bold violet]RX: {s}[/]', end='')
+    if prompt:
+        print('\n[bold blue]>>> ', end='')
+
+
+def tx(s: str = '') -> str:
+    print(f'[bold green]TX: {s}[/]')
+
+
+def measurement(s: str = '') -> str:
+    print(f'[bold dark_orange]MEAS: {s}[/]')
