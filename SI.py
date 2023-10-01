@@ -27,5 +27,5 @@ def si_to_exp(x: str) -> str:
     """ convert SI prefix to exponencial """
     for prefix, exponent in PREFIX_DICT.items():
         if prefix in x:
-            return f'{x.replace(prefix, ".")}e{exponent}'
+            return f'{x.replace(prefix, "")}e{exponent}'
     return x
