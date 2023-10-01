@@ -83,7 +83,7 @@ def measurement_set_category(measurement: int, category: str) -> None:
     Device.send_cmd(f'MEASurement{measurement:d}:MAIN {category}')
 
 
-def measurement_result(measurement: int):
+def measurement_result(measurement: int) -> float | None:
     Device.send_cmd(f'MEASurement{measurement:d}:RESult?')
 
     response = Device.read_response()
@@ -91,9 +91,7 @@ def measurement_result(measurement: int):
     if response is None or len(response) == 0:
         response = None
     else:
-        response = float(
-            ''.join(map(lambda c: chr(c), response))
-        )
+        response = float(response.decode('utf-8'))
 
     log.measurement(response)
     return response

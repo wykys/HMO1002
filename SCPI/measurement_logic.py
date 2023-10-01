@@ -145,15 +145,11 @@ def module_characteristic_of_both_channels():
             SCPI.time_base(period * 2)
             sleep(2 + 12 * period)
             SCPI.stop()
-            u1[-1] = u1_rms.get(),
-            u2[-1] = u2_rms.get(),
+            u1[-1] = u1_rms.get()
+            u2[-1] = u2_rms.get()
 
-        try:
-            ku1.append(20 * np.log10(u1[-1] / 1e-3))
-            ku2.append(20 * np.log10(u2[-1] / 1e-3))
-
-        except TypeError:
-            log.war(f'problem on freq {f:e} Hz')
+        ku1.append(20 * np.log10(u1[-1] / 1e-3))
+        ku2.append(20 * np.log10(u2[-1] / 1e-3))
 
     plt.title('Module frequency characteristic')
     plt.semilogx(frequency, ku1, label='Channel 1')
