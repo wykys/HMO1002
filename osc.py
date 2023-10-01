@@ -111,12 +111,24 @@ parser_fgen.add_argument(
 # auto measurement
 parser_measurement = subparsers.add_parser(
     'measurement',
-    help='autoscale oscilloscope'
+    help='starts the automatic measurement'
 )
 parser_measurement.add_argument(
     'measurement',
     action='store_true',
-    help='run xxxxxxxxx'
+    help='starts the automatic measurement'
+)
+parser_measurement.add_argument(
+    '-t',
+    '--type',
+    dest='type',
+    action='store',
+    default='module_and_phase_frequency_characteristics',
+    choices=[
+        'module_and_phase_frequency_characteristics',
+        'module_characteristic_of_both_channels',
+    ],
+    help='type of measurement',
 )
 
 # export
@@ -127,7 +139,7 @@ parser_measurement = subparsers.add_parser(
 parser_measurement.add_argument(
     'export',
     action='store_true',
-    help='run xxxxxxxxx'
+    help='export data'
 )
 
 args = parser.parse_args()
@@ -157,88 +169,10 @@ elif 'fgen' in args:
     SCPI.function_generator(freq=SI.si_to_exp(args.freq))
 
 elif 'measurement' in args:
-    import numpy as np
-    from matplotlib import pyplot as plt
-    from time import sleep
-
-    freq = SCPI.Measurement(
-        measurement=1,
-        category=SCPI.MeasType.frequency,
-        signal_source=SCPI.Source.channel1,
-    )
-    phase = SCPI.Measurement(
-        measurement=2,
-        category=SCPI.MeasType.phase,
-        signal_source=SCPI.Source.channel1,
-        reference_source=SCPI.Source.channel2,
-    )
-    u1_rms = SCPI.Measurement(
-        measurement=3,
-        category=SCPI.MeasType.rms,
-        signal_source=SCPI.Source.channel1,
-    )
-    u2_rms = SCPI.Measurement(
-        measurement=4,
-        category=SCPI.MeasType.rms,
-        signal_source=SCPI.Source.channel2,
-    )
-
-    fr = []
-    ph = []
-    ku = []
-    u1 = []
-    u2 = []
-
-    frequency = np.logspace(1, 5, 15)
-    for i, f in enumerate(frequency):
-        if f > 50e3:
-            frequency = frequency[:i]
-            break
-
-    for i, f in enumerate(frequency, 1):
-        log.stdo(f'measurement: {i}/{len(frequency)}')
-
-        SCPI.function_generator(f)
-        SCPI.autoscale()
-        sleep(5)
-        fr.append(freq.get())
-        ph.append(phase.get())
-        u1.append(u1_rms.get())
-        u2.append(u2_rms.get())
-
-        while any((
-            fr[-1] is None,
-            ph[-1] is None,
-            u1[-1] is None,
-            u2[-1] is None,
-        )):
-            SCPI.autoscale()
-            sleep(5)
-            fr[-1] = freq.get(),
-            ph[-1] = phase.get(),
-            u1[-1] = u1_rms.get(),
-            u2[-1] = u2_rms.get(),
-
-        try:
-            ku.append(20 * np.log10(u2[-1] / u1[-1]))
-        except TypeError:
-            log.war(f'problem on freq {f:e} Hz')
-
-    plt.subplot(211)
-    plt.title('modular frequency response')
-    plt.semilogx(fr, ku)
-    plt.xlabel('$f$ $[Hz]$')
-    plt.ylabel('$K_U$ $[dB]$')
-    plt.grid(True, 'major')
-    plt.grid(True, 'minor')
-    plt.subplot(212)
-    plt.title('phase frequency characteristic')
-    plt.semilogx(fr, ph)
-    plt.xlabel('$f$ $[Hz]$')
-    plt.ylabel('$\\varphi$ $[^\circ]$')
-    plt.grid(True, 'major')
-    plt.grid(True, 'minor')
-    plt.show()
+    if args.type == 'module_and_phase_frequency_characteristics':
+        SCPI.module_and_phase_frequency_characteristics()
+    elif args.type == 'module_characteristic_of_both_channels':
+        SCPI.module_characteristic_of_both_channels()
 
 elif 'export' in args:
     SCPI.export()

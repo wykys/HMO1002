@@ -1,34 +1,38 @@
 # wykys 2018
 
 from rich import print
-from sys import stdout, stderr
+from sys import stderr
 
 
-def err(s=''):
+def err(s: str = '') -> str:
     print(f'[bold red]ERROR: {s}[/]', file=stderr)
 
 
-def war(s=''):
+def war(s: str = '') -> str:
     print(f'[bold yellow]WARNING: {s}[/]', file=stderr)
 
 
-def ok(s=''):
-    print(f'[bold green]OK: {s}[/]', file=stdout)
+def ok(s: str = '') -> str:
+    print(f'[bold green]OK: {s}[/]')
 
 
-def stdo(s=''):
-    print(f'[bold white]{s}[/]', file=stdout)
+def stdo(s: str = '') -> str:
+    print(f'[bold white]{s}[/]')
 
 
-def cmd(s=''):
-    print(f'[bold cyan]CMD: {s}[/]', file=stdout)
+def cmd(s: str = '') -> str:
+    print(f'[bold cyan]CMD: {s}[/]')
 
 
-def rx(s='', prompt=True):
-    print(f'\r[bold violet]RX: {s}[/]', file=stdout, end='')
+def rx(s: str = '', prompt: bool = True) -> str:
+    print(f'\r[bold violet]RX: {s}[/]', end='')
     if prompt:
-        print(f'\n[bold blue]>>> ', file=stdout, end='')
+        print('\n[bold blue]>>> ', end='')
 
 
-def tx(s=''):
-    print(f'[bold green]TX: {s}[/]', file=stdout)
+def tx(s: str = '') -> str:
+    print(f'[bold green]TX: {s}[/]')
+
+
+def measurement(s: str = '') -> str:
+    print(f'[bold dark_orange]MEAS: {s}[/]')

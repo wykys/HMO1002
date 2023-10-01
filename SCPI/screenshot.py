@@ -1,9 +1,10 @@
 import log
 from device import Device
+import SCPI
 
 
 def screenshot(name='img', color='color'):
-    Device.send_cmd('STOP')
+    SCPI.stop()
     Device.send_cmd('HCOPy:FORMat PNG')
 
     if color == 'color':
@@ -37,4 +38,4 @@ def screenshot(name='img', color='color'):
     fw.write(img)
     fw.close()
 
-    Device.send_cmd('RUN')
+    SCPI.run()

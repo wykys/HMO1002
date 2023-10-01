@@ -1,3 +1,4 @@
+import log
 from device import Device
 
 MEASUREMENT_MIN = 1
@@ -87,14 +88,14 @@ def measurement_result(measurement: int):
 
     response = Device.read_response()
 
-    if len(response) == 0:
+    if response is None or len(response) == 0:
         response = None
     else:
         response = float(
             ''.join(map(lambda c: chr(c), response))
         )
 
-    print(response)
+    log.measurement(response)
     return response
 
 
