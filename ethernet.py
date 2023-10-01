@@ -16,6 +16,7 @@ class Ethernet:
         self.port = port
 
         self.socket = socket(AF_INET, SOCK_STREAM)
+        self.socket.settimeout(1.5)
         self.open_connection()
 
     def __del__(self) -> None:
@@ -35,6 +36,10 @@ class Ethernet:
     def read_response(self, size: int) -> bytes | None:
         try:
             response = self.socket.recv(size)
+
+        except TimeoutError:
+            response = b''
+
         except:
             log.err('the device was disconnected')
             exit(1)
