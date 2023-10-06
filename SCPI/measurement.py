@@ -84,14 +84,27 @@ def measurement_set_category(measurement: int, category: str) -> None:
 
 
 def measurement_result(measurement: int) -> float | None:
-    Device.send_cmd(f'MEASurement{measurement:d}:RESult?')
 
-    response = Device.read_response()
+    failure = False
 
-    if response is None or len(response) == 0:
-        response = None
-    else:
-        response = float(response.decode('utf-8'))
+    while True:
+
+        if failure:
+            log.war('repeating the reading of the value')
+
+        Device.send_cmd(f'MEASurement{measurement:d}:RESult?')
+
+        response = Device.read_response()
+
+        if response is None or len(response) == 0:
+            response = None
+        else:
+            try:
+                response = float(response.decode('utf-8'))
+                break
+            except ValueError:
+                log.err(f'string {response} cannot be converted to float')
+                failure = True
 
     log.measurement(response)
     return response
