@@ -38,9 +38,9 @@ def module_and_phase_frequency_characteristics():
     u1 = []
     u2 = []
 
-    frequency = np.logspace(1, 5, 42)
+    frequency = np.logspace(1, 5, 400)
     for i, f in enumerate(frequency):
-        if f > 50e3:
+        if f > 20e3:
             frequency = frequency[:i]
             break
 
@@ -55,7 +55,7 @@ def module_and_phase_frequency_characteristics():
         sleep(1)
         SCPI.autoscale()
         SCPI.time_base(period)
-        sleep(2 + 12 * period)
+        sleep(3 + 12 * period)
         SCPI.stop()
 
         fr.append(freq.get())
@@ -68,12 +68,16 @@ def module_and_phase_frequency_characteristics():
             ph[-1] is None,
             u1[-1] is None,
             u2[-1] is None,
+            fr[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+            ph[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+            u1[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+            u2[-1] == SCPI.WRONGLY_MEASURED_VALUE,
         )):
             log.war('repeating the measurement')
             SCPI.run()
             SCPI.autoscale()
             SCPI.time_base(period * 2)
-            sleep(2 + 12 * period)
+            sleep(3 + 12 * period)
             SCPI.stop()
             fr[-1] = freq.get()
             ph[-1] = phase.get()
@@ -83,14 +87,14 @@ def module_and_phase_frequency_characteristics():
         ku.append(20 * np.log10(u2[-1] / u1[-1]))
 
     plt.subplot(211)
-    plt.title('modular frequency response')
+    plt.title('Module frequency response')
     plt.semilogx(fr, ku)
     plt.xlabel('$f$ $[Hz]$')
     plt.ylabel('$K_U$ $[dB]$')
     plt.grid(True, 'major')
     plt.grid(True, 'minor')
     plt.subplot(212)
-    plt.title('phase frequency characteristic')
+    plt.title('Phase frequency characteristic')
     plt.semilogx(fr, ph)
     plt.xlabel('$f$ $[Hz]$')
     plt.ylabel('$\\varphi$ $[^\circ]$')
@@ -136,7 +140,7 @@ def module_characteristic_of_both_channels():
         sleep(1)
         SCPI.autoscale()
         SCPI.time_base(period)
-        sleep(2 + 12 * period)
+        sleep(3 + 12 * period)
         SCPI.stop()
         u1.append(u1_rms.get())
         u2.append(u2_rms.get())
@@ -144,8 +148,8 @@ def module_characteristic_of_both_channels():
         while any((
             u1[-1] is None,
             u2[-1] is None,
-            u1[-1] == 9.91e+37,
-            u2[-1] == 9.91e+37,
+            u1[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+            u2[-1] == SCPI.WRONGLY_MEASURED_VALUE,
         )):
             log.war('repeating the measurement')
             SCPI.run()

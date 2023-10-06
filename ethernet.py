@@ -9,7 +9,7 @@ from socket import socket, AF_INET, SOCK_STREAM
 class Ethernet:
     def __init__(
         self,
-        ip='192.168.1.23',
+        ip='192.168.1.11',
         port=5025,
     ) -> None:
         self.ip = ip
