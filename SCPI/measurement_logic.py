@@ -49,9 +49,8 @@ def module_and_phase_frequency_characteristics():
 
     def add_another_channel() -> bool:
         while True:
-            user_input = input(
-                'Add another channel? yes / no: '
-            ).strip().lower()
+            log.prompt('Add another channel? yes / no')
+            user_input = input().strip().lower()
 
             if user_input in ['yes', 'y', '']:
                 return True
