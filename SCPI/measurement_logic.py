@@ -32,74 +32,121 @@ def module_and_phase_frequency_characteristics():
         signal_source=SCPI.Source.channel2,
     )
 
-    fr = []
-    ph = []
-    ku = []
-    u1 = []
-    u2 = []
+    class ModuleAndPhaseCharacteristic:
+        def __init__(self, index: int) -> None:
+            self.fr = []
+            self.ph = []
+            self.ku = []
+            self.u1 = []
+            self.u2 = []
+            self.label = f'Channel {index}'
 
-    frequency = np.logspace(1, 5, 400)
+    frequency = np.logspace(1, 5, 100)
     for i, f in enumerate(frequency):
-        if f > 20e3:
+        if f > 25e3:
             frequency = frequency[:i]
             break
 
-    for i, f in enumerate(frequency, 1):
+    def add_another_channel() -> bool:
+        while True:
+            user_input = input(
+                'Add another channel? yes / no: '
+            ).strip().lower()
 
-        period = 1 / f
+            if user_input in ['yes', 'y', '']:
+                return True
 
-        log.stdo(f'measurement: {i}/{len(frequency)}')
+            elif user_input in ['no', 'n']:
+                return False
 
-        SCPI.run()
-        SCPI.function_generator(f)
-        sleep(1)
-        SCPI.autoscale()
-        SCPI.time_base(period)
-        sleep(3 + 12 * period)
-        SCPI.stop()
+            else:
+                log.err(
+                    'Incorrect input, possible options are: '
+                    'yes, y, no, n or enter'
+                )
 
-        fr.append(freq.get())
-        ph.append(phase.get())
-        u1.append(u1_rms.get())
-        u2.append(u2_rms.get())
+    data = []
+    number_of_channels = 0
 
-        while any((
-            fr[-1] is None,
-            ph[-1] is None,
-            u1[-1] is None,
-            u2[-1] is None,
-            fr[-1] == SCPI.WRONGLY_MEASURED_VALUE,
-            ph[-1] == SCPI.WRONGLY_MEASURED_VALUE,
-            u1[-1] == SCPI.WRONGLY_MEASURED_VALUE,
-            u2[-1] == SCPI.WRONGLY_MEASURED_VALUE,
-        )):
-            log.war('repeating the measurement')
+    while True:
+
+        number_of_channels += 1
+        data.append(ModuleAndPhaseCharacteristic(number_of_channels))
+
+        for i, f in enumerate(frequency, 1):
+
+            period = 1 / f
+
+            log.stdo(f'measurement: {i}/{len(frequency)}')
+
             SCPI.run()
+            SCPI.function_generator(f)
+            sleep(2)
             SCPI.autoscale()
-            SCPI.time_base(period * 2)
+            SCPI.time_base(period)
             sleep(3 + 12 * period)
             SCPI.stop()
-            fr[-1] = freq.get()
-            ph[-1] = phase.get()
-            u1[-1] = u1_rms.get()
-            u2[-1] = u2_rms.get()
 
-        ku.append(20 * np.log10(u2[-1] / u1[-1]))
+            data[-1].fr.append(freq.get())
+            data[-1].ph.append(phase.get())
+            data[-1].u1.append(u1_rms.get())
+            data[-1].u2.append(u2_rms.get())
+
+            while any((
+                data[-1].fr[-1] is None,
+                data[-1].ph[-1] is None,
+                data[-1].u1[-1] is None,
+                data[-1].u2[-1] is None,
+                data[-1].fr[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+                data[-1].ph[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+                data[-1].u1[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+                data[-1].u2[-1] == SCPI.WRONGLY_MEASURED_VALUE,
+            )):
+                log.war('repeating the measurement')
+                SCPI.run()
+                SCPI.autoscale()
+                sleep(2)
+                SCPI.time_base(period * 2)
+                sleep(3 + 12 * period)
+                SCPI.stop()
+                data[-1].fr[-1] = freq.get()
+                data[-1].ph[-1] = phase.get()
+                data[-1].u1[-1] = u1_rms.get()
+                data[-1].u2[-1] = u2_rms.get()
+
+            data[-1].ku.append(
+                20 * np.log10(data[-1].u2[-1] / data[-1].u1[-1])
+            )
+
+        if not add_another_channel():
+            break
 
     plt.subplot(211)
     plt.title('Module frequency response')
-    plt.semilogx(fr, ku)
     plt.xlabel('$f$ $[Hz]$')
     plt.ylabel('$K_U$ $[dB]$')
     plt.grid(True, 'major')
     plt.grid(True, 'minor')
+
+    for channel in data:
+        plt.semilogx(channel.fr, channel.ku, label=channel.label)
+
+    if number_of_channels > 1:
+        plt.legend()
+
     plt.subplot(212)
     plt.title('Phase frequency characteristic')
-    plt.semilogx(fr, ph)
     plt.xlabel('$f$ $[Hz]$')
     plt.ylabel('$\\varphi$ $[^\circ]$')
     plt.grid(True, 'major')
     plt.grid(True, 'minor')
+
+    for channel in data:
+        plt.semilogx(channel.fr, channel.ph, label=channel.label)
+
+    if number_of_channels > 1:
+        plt.legend()
+
     plt.show()
 
 
