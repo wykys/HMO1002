@@ -22,6 +22,15 @@ parser.add_argument(
     help='communication interface with the device',
 )
 
+parser.add_argument(
+    '-p',
+    '--ip',
+    dest='ip',
+    action='store',
+    default='192.168.1.12',
+    help='ip address of the oscilloscope',
+)
+
 subparsers = parser.add_subparsers(help='commands')
 
 # screenshot
@@ -147,7 +156,7 @@ args = parser.parse_args()
 if args.interface == 'uart':
     Device.slect_uart()
 else:
-    Device.select_ethernet()
+    Device.select_ethernet(args.ip)
 
 if 'screenshot' in args:
     if args.date:

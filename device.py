@@ -23,9 +23,9 @@ class Device:
         from uart import Uart
         self.interface = Uart()
 
-    def select_ethernet(self) -> None:
+    def select_ethernet(self, ip: str) -> None:
         from ethernet import Ethernet
-        self.interface = Ethernet()
+        self.interface = Ethernet(ip)
 
     def send_cmd(self, cmd: str) -> None:
         self.interface.send_cmd(cmd)
