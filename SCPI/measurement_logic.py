@@ -168,7 +168,7 @@ def module_characteristic_of_both_channels():
     ku1 = []
     ku2 = []
 
-    frequency = np.logspace(1, 5, 400)
+    frequency = np.logspace(1, 5, 10)
     for i, f in enumerate(frequency):
 
         if f > 20e3:
